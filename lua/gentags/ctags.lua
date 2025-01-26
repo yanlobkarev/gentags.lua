@@ -3,7 +3,6 @@ local M = {}
 
 M.generate = function(cfg, lang, tag_file, filepath)
   local args = {
-    "--languages=" .. lang,
     "-f",
     tag_file:expand(),
   }
@@ -11,12 +10,19 @@ M.generate = function(cfg, lang, tag_file, filepath)
     table.insert(args, v)
   end
 
+  if lang then
+    table.insert(args, "--languages=" .. lang)
+  end
   if filepath then
     table.insert(args, "-a")
     table.insert(args, filepath)
   else
     table.insert(args, "-R")
     table.insert(args, cfg.root_dir:expand())
+  end
+
+  if cfg.debug then
+    vim.print(cfg.bin .. ' ' .. vim.inspect(args))
   end
 
   local j = Job:new({
